@@ -45,6 +45,7 @@ class LessonService:
             .execute()
             
         return {
+            
             **lesson_response.data,
             "exercises": [e["exercises"] for e in exercises_response.data]
         }
