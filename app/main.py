@@ -1,13 +1,13 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.routes import test
 from app.routes import (
-    exercises,
+    auth, 
     users,
+    exercises,
     submissions,
-    auth,
     lessons,
-    admin
+    admin,
+    test
 )
 from app.config import settings
 
@@ -17,29 +17,38 @@ app = FastAPI(
     description="API para la plataforma educativa USTA Trainer"
 )
 
-# Configuración CORS
-# Configuración CORS actualizada
+# Configuración CORS mejorada
+origins = [
+    "http://localhost:8080",
+    "https://localhost:8080",
+    "http://localhost:3000",
+    "https://tu-frontend-en-produccion.com"
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:8080",  # Frontend en desarrollo (HTTP)
-        "https://localhost:8080",  # Por si usas HTTPS local
-        "https://tu-frontend-en-produccion.com"  # Dominio de producción
-    ],
+    allow_origins=origins,
     allow_credentials=True,
-    allow_methods=["*"],  # Puedes especificar ["GET", "POST", ...] si prefieres
-    allow_headers=["*"],  # O listar los headers específicos que usas
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
-# Incluir todas las rutas
-app.include_router(auth.router)
-app.include_router(users.router)
-app.include_router(exercises.router)
-app.include_router(submissions.router)
-app.include_router(lessons.router)
-app.include_router(admin.router)
-app.include_router(test.router)
+# Prefijo API v1
+api_prefix = "/api/v1"
+
+# Incluir rutas con prefijo
+app.include_router(auth.router, prefix=api_prefix)
+app.include_router(users.router, prefix=api_prefix)
+app.include_router(exercises.router, prefix=api_prefix)
+app.include_router(submissions.router, prefix=api_prefix)
+app.include_router(lessons.router, prefix=api_prefix)
+app.include_router(admin.router, prefix=api_prefix)
+app.include_router(test.router, prefix=api_prefix)
 
 @app.get("/")
 def root():
     return {"message": "Bienvenido a USTA Trainer API"}
+
+@app.get(api_prefix)
+def api_root():
+    return {"message": "API v1 Endpoint"}
