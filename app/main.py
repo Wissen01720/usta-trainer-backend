@@ -6,8 +6,7 @@ from app.routes import (
     exercises,
     submissions,
     lessons,
-    admin,
-    test
+    admin
 )
 from app.config import settings
 
@@ -17,10 +16,9 @@ app = FastAPI(
     description="API para la plataforma educativa USTA Trainer"
 )
 
-# Configuración CORS mejorada
+# Configuración CORS
 origins = [
     "http://localhost:8080",
-    "https://localhost:8080",
     "http://localhost:3000",
     "https://tu-frontend-en-produccion.com"
 ]
@@ -43,7 +41,6 @@ app.include_router(exercises.router, prefix=api_prefix)
 app.include_router(submissions.router, prefix=api_prefix)
 app.include_router(lessons.router, prefix=api_prefix)
 app.include_router(admin.router, prefix=api_prefix)
-app.include_router(test.router, prefix=api_prefix)
 
 @app.get("/")
 def root():

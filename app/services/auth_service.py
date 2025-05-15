@@ -8,6 +8,7 @@ from app.utils.security import (
     ACCESS_TOKEN_EXPIRE_MINUTES
 )
 from app.utils.exceptions import AuthException
+from pydantic import ValidationError
 
 class AuthService:
     def __init__(self):
@@ -45,8 +46,11 @@ class AuthService:
         
         if not response.data:
             raise AuthException("Error al crear perfil de usuario")
-            
-        return response.data[0]
+        
+        try:
+            return UserOut(**response.data[0])
+        except ValidationError as e:
+            raise ValueError(f"Error de validación: {str(e)}")
 
     async def authenticate_user(self, email: str, password: str) -> Token:
         try:
@@ -71,4 +75,4 @@ class AuthService:
                 token_type="bearer"
             )
         except Exception as e:
-            raise AuthException("Error en autenticación")
+            raise AuthException(f"Error en autenticación: {str(e)}")

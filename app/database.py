@@ -1,7 +1,6 @@
 import os
 from supabase import create_client, Client
 from dotenv import load_dotenv
-from fastapi import HTTPException
 
 load_dotenv()
 
@@ -12,10 +11,7 @@ class SupabaseClient:
         if cls._instance is None:
             # Verificar que las variables de entorno estén configuradas
             if not os.getenv("SUPABASE_URL") or not os.getenv("SUPABASE_KEY"):
-                raise HTTPException(
-                    status_code=500,
-                    detail="Configuración de Supabase no encontrada"
-                )
+                raise ValueError("Configuración de Supabase no encontrada")
                 
             cls._instance = super().__new__(cls)
             cls._instance.url = os.getenv("SUPABASE_URL")
@@ -26,10 +22,7 @@ class SupabaseClient:
             try:
                 cls._instance.client.table('users').select('*').limit(1).execute()
             except Exception as e:
-                raise HTTPException(
-                    status_code=500,
-                    detail=f"Error conectando a Supabase: {str(e)}"
-                )
+                raise ConnectionError(f"Error conectando a Supabase: {str(e)}")
         return cls._instance
 
 def get_supabase() -> Client:

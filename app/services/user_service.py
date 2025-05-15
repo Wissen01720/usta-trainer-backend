@@ -2,6 +2,7 @@ from typing import Optional
 from app.database import get_supabase
 from app.schemas.user import UserOut, UserUpdate
 from app.utils.exceptions import NotFoundException
+from pydantic import ValidationError
 
 class UserService:
     def __init__(self):
@@ -13,7 +14,10 @@ class UserService:
         if not response.data:
             raise NotFoundException("Usuario no encontrado")
         
-        return response.data
+        try:
+            return UserOut(**response.data)
+        except ValidationError as e:
+            raise ValueError(f"Error de validación: {str(e)}")
     
     async def update_user(self, user_id: str, user_data: UserUpdate) -> UserOut:
         update_data = user_data.dict(exclude_unset=True)
@@ -27,5 +31,8 @@ class UserService:
             
         if not response.data:
             raise NotFoundException("Usuario no encontrado")
-            
-        return response.data
+        
+        try:
+            return UserOut(**response.data)
+        except ValidationError as e:
+            raise ValueError(f"Error de validación: {str(e)}")
