@@ -27,3 +27,14 @@ async def get_current_user(token: str = Depends(oauth2_scheme)) -> UserOut:
         return response.data
     except Exception:
         raise credentials_exception
+
+def get_current_teacher(current_user: dict = Depends(get_current_user)) -> dict:
+    """
+    Permite solo a usuarios con rol 'teacher' o 'admin'.
+    """
+    if current_user["role"] not in ["teacher", "admin"]:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Teacher privileges required"
+        )
+    return current_user
