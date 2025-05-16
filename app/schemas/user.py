@@ -27,9 +27,12 @@ class UserUpdate(BaseModel):
 
 class UserOut(BaseModel):
     id: str
+    email: EmailStr
+    first_name: str
+    last_name: str
     role: UserRole
     avatar_url: Optional[str] = None
-    is_active: bool
+    status: str  # <--- usa status, no is_active
     created_at: str
     updated_at: str
 
