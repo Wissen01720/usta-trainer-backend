@@ -34,7 +34,7 @@ class AuthService:
             "first_name": user_data.first_name,
             "last_name": user_data.last_name,
             "role": user_data.role.value,
-            "is_active": True,
+            "status": "active",
         }
         
         response = self.supabase.table("users").insert(user_profile).execute()
