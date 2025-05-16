@@ -38,3 +38,14 @@ def get_current_teacher(current_user: dict = Depends(get_current_user)) -> dict:
             detail="Teacher privileges required"
         )
     return current_user
+
+def get_current_admin(current_user: dict = Depends(get_current_user)) -> dict:
+    """
+    Permite solo a usuarios con rol 'admin'.
+    """
+    if current_user["role"] != "admin":
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Admin privileges required"
+        )
+    return current_user
