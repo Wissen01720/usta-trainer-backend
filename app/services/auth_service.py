@@ -24,19 +24,13 @@ class AuthService:
         if existing_user.data:
             raise AuthException("El email ya está registrado")
         
-        # Crear usuario en Supabase Auth
-        auth_response = self.supabase.auth.sign_up({
-            "email": user_data.email,
-            "password": user_data.password,
-        })
-        
-        if auth_response.user is None:
-            raise AuthException("Error al registrar usuario")
+        # Hashear la contraseña antes de guardar
+        hashed_password = get_password_hash(user_data.password)
         
         # Crear perfil en la tabla users
         user_profile = {
-            "id": auth_response.user.id,
             "email": user_data.email,
+            "password_hash": hashed_password,
             "first_name": user_data.first_name,
             "last_name": user_data.last_name,
             "role": user_data.role.value,
@@ -51,22 +45,19 @@ class AuthService:
             return UserOut(**response.data[0])
         except ValidationError as e:
             raise ValueError(f"Error de validación: {str(e)}")
-
+    
     async def authenticate_user(self, email: str, password: str) -> Token:
         try:
-            # Autenticar con Supabase Auth
-            auth_response = self.supabase.auth.sign_in_with_password({
-                "email": email,
-                "password": password
-            })
-            
-            if auth_response.user is None:
+            # Busca el usuario por email
+            user_row = self.supabase.table("users").select("*").eq("email", email).single().execute()
+            user = user_row.data
+            if not user or not verify_password(password, user["password_hash"]):
                 raise AuthException("Credenciales inválidas")
             
             # Crear token JWT
             access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
             access_token = create_access_token(
-                data={"sub": auth_response.user.id},
+                data={"sub": user["id"], "email": user["email"], "role": user["role"]},
                 expires_delta=access_token_expires
             )
             
