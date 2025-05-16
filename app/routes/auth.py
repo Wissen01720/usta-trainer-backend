@@ -27,7 +27,6 @@ async def register(user_data: UserCreate, service: AuthService = Depends(AuthSer
 async def login(form_data: OAuth2PasswordRequestForm = Depends(), service: AuthService = Depends(AuthService)):
     try:
         user = await service.authenticate_user(form_data.username, form_data.password)
-        # Genera el token aquí directamente
         from app.utils.security import create_access_token, ACCESS_TOKEN_EXPIRE_MINUTES
         from datetime import timedelta
         access_token = create_access_token(
