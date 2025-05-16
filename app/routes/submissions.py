@@ -4,7 +4,7 @@ from app.schemas.submission import SubmissionOut, SubmissionCreate
 from app.services.submission_service import SubmissionService
 from app.utils.dependencies import get_current_user
 
-router = APIRouter(prefix="/api/v1/submissions", tags=["submissions"])
+router = APIRouter(prefix="/submissions", tags=["submissions"])
 
 @router.post("/", response_model=SubmissionOut, status_code=status.HTTP_201_CREATED)
 async def create_submission(

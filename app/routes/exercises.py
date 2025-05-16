@@ -9,7 +9,7 @@ from app.services.exercise_service import ExerciseService  # ← IMPORTACIÓN DI
 from loguru import logger
 
 router = APIRouter(
-    prefix="/api/v1/exercises",
+    prefix="/exercises",
     tags=["exercises"],
     responses={
         404: {"description": "Resource not found"},

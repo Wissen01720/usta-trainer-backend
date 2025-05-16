@@ -4,8 +4,7 @@ from app.schemas.user import UserCreate, UserOut, Token
 from app.services.auth_service import AuthService
 from app.utils.exceptions import AuthException
 
-
-router = APIRouter(prefix="/api/v1/auth", tags=["auth"])
+router = APIRouter(prefix="/auth", tags=["auth"])
 
 @router.post("/register", response_model=UserOut, status_code=status.HTTP_201_CREATED)
 async def register(user_data: UserCreate, service: AuthService = Depends(AuthService)):

@@ -4,7 +4,7 @@ from app.utils.dependencies import get_current_user
 from app.utils.exceptions import NotFoundException
 from app.schemas.user import UserOut, UserUpdate
 
-router = APIRouter(prefix="/api/v1/users", tags=["users"])
+router = APIRouter(prefix="/users", tags=["users"])
 
 @router.get("/me", response_model=UserOut)
 async def get_current_user_profile(

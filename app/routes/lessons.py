@@ -4,7 +4,7 @@ from app.schemas.lessons import LessonCreate, LessonOut, LessonWithExercises
 from app.services.lesson_service import LessonService
 from app.utils.dependencies import get_current_user, get_current_teacher
 
-router = APIRouter(prefix="/api/v1/lessons", tags=["lessons"])
+router = APIRouter(prefix="/lessons", tags=["lessons"])
 
 @router.post("/", response_model=LessonOut, status_code=status.HTTP_201_CREATED)
 async def create_lesson(
