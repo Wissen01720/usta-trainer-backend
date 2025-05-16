@@ -25,7 +25,7 @@ class UserUpdate(BaseModel):
     avatar_url: Optional[str] = None
     bio: Optional[str] = Field(None, max_length=500)
 
-class UserOut(dict):
+class UserOut(BaseModel):
     id: str
     role: UserRole
     avatar_url: Optional[str] = None
