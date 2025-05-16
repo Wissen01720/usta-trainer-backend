@@ -1,6 +1,6 @@
 from datetime import timedelta
 from app.database import get_supabase
-from app.schemas.user import UserCreate, UserOut, Token
+from app.schemas.user import UserCreate, UserOut
 from app.utils.security import (
     verify_password,
     get_password_hash,
@@ -47,24 +47,13 @@ class AuthService:
         except ValidationError as e:
             raise ValueError(f"Error de validación: {str(e)}")
     
-    async def authenticate_user(self, email: str, password: str) -> Token:
+    async def authenticate_user(self, email: str, password: str) -> UserOut:
         try:
             # Busca el usuario por email
             user_row = self.supabase.table("users").select("*").eq("email", email).single().execute()
             user = user_row.data
             if not user or not verify_password(password, user["password_hash"]):
                 raise AuthException("Credenciales inválidas")
-            
-            # Crear token JWT
-            access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-            access_token = create_access_token(
-                data={"sub": user["id"], "email": user["email"], "role": user["role"]},
-                expires_delta=access_token_expires
-            )
-            
-            return Token(
-                access_token=access_token,
-                token_type="bearer"
-            )
+            return UserOut(**user)
         except Exception as e:
             raise AuthException(f"Error en autenticación: {str(e)}")
