@@ -4,6 +4,7 @@ from pydantic import BaseModel
 from app.schemas.user import UserCreate, UserOut
 from app.services.auth_service import AuthService
 from app.utils.exceptions import AuthException
+from app.utils.dependencies import get_current_user  # Asegúrate de tener esto
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
@@ -19,7 +20,6 @@ async def register(user_data: UserCreate, service: AuthService = Depends(AuthSer
     except AuthException as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
     except Exception as e:
-        # Para ver errores de validación y evitar error 500 sin CORS
         print("ERROR EN REGISTRO:", e)
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Error interno en el registro")
 
@@ -47,3 +47,10 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends(), service: AuthS
     except Exception as e:
         print("ERROR EN LOGIN:", e)
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Error interno en el login")
+
+@router.get("/profile", response_model=UserOut)
+async def get_profile(current_user: UserOut = Depends(get_current_user)):
+    """
+    Devuelve el perfil del usuario autenticado.
+    """
+    return current_user
