@@ -6,7 +6,8 @@ from app.routes import (
     exercises,
     submissions,
     lessons,
-    admin
+    admin,
+    progress
 )
 from app.config import settings
 
@@ -35,12 +36,13 @@ app.add_middleware(
 api_prefix = "/api/v1"
 
 # Incluir rutas con prefijo
-app.include_router(auth.router, prefix="/api/v1")
-app.include_router(users.router, prefix="/api/v1")
-app.include_router(exercises.router, prefix="/api/v1")
-app.include_router(submissions.router, prefix="/api/v1")
-app.include_router(lessons.router, prefix="/api/v1")
-app.include_router(admin.router, prefix="/api/v1")
+app.include_router(auth.router, prefix=api_prefix)
+app.include_router(users.router, prefix=api_prefix)
+app.include_router(exercises.router, prefix=api_prefix)
+app.include_router(submissions.router, prefix=api_prefix)
+app.include_router(lessons.router, prefix=api_prefix)
+app.include_router(admin.router, prefix=api_prefix)
+app.include_router(progress.router, prefix=api_prefix)
 
 @app.get("/")
 def root():

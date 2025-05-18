@@ -25,7 +25,7 @@ class UserService:
         response = self.supabase.table("users")\
             .update(update_data)\
             .eq("id", user_id)\
-            .execute()  # <-- elimina .select("*") y .single()
+            .execute()
         print("Respuesta de supabase:", response.data)
     
         if not response.data:

@@ -4,7 +4,7 @@ from pydantic import BaseModel
 from app.schemas.user import UserCreate, UserOut
 from app.services.auth_service import AuthService
 from app.utils.exceptions import AuthException
-from app.utils.dependencies import get_current_user  # Asegúrate de tener esto
+from app.utils.dependencies import get_current_user
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 

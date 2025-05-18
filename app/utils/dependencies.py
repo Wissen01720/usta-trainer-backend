@@ -23,7 +23,7 @@ async def get_current_user(token: str = Depends(oauth2_scheme)) -> UserOut:
         if not response.data:
             raise credentials_exception
 
-        return UserOut(**response.data)  # <-- Devuelve un objeto UserOut
+        return UserOut(**response.data)
     except Exception:
         raise credentials_exception
 
