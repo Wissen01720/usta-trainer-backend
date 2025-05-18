@@ -24,6 +24,10 @@ class UserUpdate(BaseModel):
     last_name: Optional[str] = Field(None, min_length=2, max_length=50)
     avatar_url: Optional[str] = None
     bio: Optional[str] = Field(None, max_length=500)
+    location: Optional[str] = None
+    website_url: Optional[str] = None
+    date_of_birth: Optional[str] = None
+    preferred_language: Optional[str] = None
 
 class UserOut(BaseModel):
     id: str
