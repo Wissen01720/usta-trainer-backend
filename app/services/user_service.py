@@ -25,16 +25,15 @@ class UserService:
         response = self.supabase.table("users")\
             .update(update_data)\
             .eq("id", user_id)\
-            .select("*")\
-            .single()\
-            .execute()
+            .execute()  # <-- elimina .select("*") y .single()
         print("Respuesta de supabase:", response.data)
     
         if not response.data:
             print("No se encontró el usuario o no hubo cambios.")
             raise NotFoundException("Usuario no encontrado o sin cambios")
         try:
-            return UserOut(**response.data)
+            # Supabase retorna una lista de dicts en data después de update
+            return UserOut(**response.data[0])
         except ValidationError as e:
             print("Error de validación:", str(e))
             raise ValueError(f"Error de validación: {str(e)}")
