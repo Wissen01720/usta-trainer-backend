@@ -7,6 +7,9 @@ class ExerciseBase(BaseModel):
     title: str = Field(..., min_length=5, max_length=100,
                       examples=["Implement a stack data structure"],
                       description="Title of the exercise")
+    slug: str = Field(..., min_length=3, max_length=100,
+                      examples=["implement-a-stack"],
+                      description="URL-friendly unique identifier for the exercise")
     description: str = Field(..., min_length=10, max_length=500,
                            examples=["Create a stack class with push, pop and peek methods"],
                            description="Detailed exercise description")
@@ -21,6 +24,7 @@ class ExerciseBase(BaseModel):
         json_schema_extra={
             "example": {
                 "title": "Implement a stack",
+                "slug": "implement-a-stack",
                 "description": "Create stack with basic operations",
                 "difficulty": "intermediate",
                 "language": "python"
@@ -38,6 +42,7 @@ class ExerciseCreate(ExerciseBase):
 
 class ExerciseUpdate(BaseModel):
     title: Optional[str] = Field(None, min_length=5, max_length=100)
+    slug: Optional[str] = Field(None, min_length=3, max_length=100)
     description: Optional[str] = Field(None, min_length=10, max_length=500)
     difficulty: Optional[str] = None
     language: Optional[str] = None

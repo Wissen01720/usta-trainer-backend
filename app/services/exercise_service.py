@@ -1,3 +1,4 @@
+import re
 from typing import Optional, List
 from app.database import get_supabase
 from app.schemas.exercise import ExerciseCreate, ExerciseOut, ExerciseUpdate, ExerciseWithTests
@@ -5,6 +6,13 @@ from app.utils.exceptions import NotFoundException
 from fastapi import HTTPException, status
 from loguru import logger
 from pydantic import ValidationError
+
+def slugify(text: str) -> str:
+    text = text.lower().strip()
+    text = re.sub(r'\s+', '-', text)
+    text = re.sub(r'[^\w\-]', '', text)
+    text = re.sub(r'-+', '-', text)
+    return text
 
 class ExerciseService:
     def __init__(self):
@@ -14,6 +22,9 @@ class ExerciseService:
         try:
             exercise_data = exercise.model_dump()
             exercise_data["author_id"] = author_id
+            # Generar slug si no viene del frontend
+            if not exercise_data.get("slug"):
+                exercise_data["slug"] = slugify(exercise_data["title"])
             response = self.supabase.table("exercises").insert(exercise_data).execute()
             if not response.data:
                 logger.error("Empty response from Supabase when creating exercise")
