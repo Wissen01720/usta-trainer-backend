@@ -18,16 +18,19 @@ class UserService:
             raise ValueError(f"Error de validación: {str(e)}")
     
     async def update_user(self, user_id: str, user_data: UserUpdate) -> UserOut:
-        # Convierte el modelo UserUpdate a dict y elimina los campos no enviados
         update_data = user_data.model_dump(exclude_unset=True) if hasattr(user_data, "model_dump") else user_data.dict(exclude_unset=True)
+        print("Datos a actualizar:", update_data)  # <-- Depuración
+    
         response = self.supabase.table("users")\
             .update(update_data)\
             .eq("id", user_id)\
             .select("*")\
             .single()\
             .execute()
+        print("Respuesta de supabase:", response.data)  # <-- Depuración
+    
         if not response.data:
-            raise NotFoundException("Usuario no encontrado")
+            raise NotFoundException("Usuario no encontrado o sin cambios")
         try:
             return UserOut(**response.data)
         except ValidationError as e:
