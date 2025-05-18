@@ -32,7 +32,12 @@ class UserOut(BaseModel):
     last_name: str
     role: UserRole
     avatar_url: Optional[str] = None
-    status: str  # <--- usa status, no is_active
+    bio: Optional[str] = None
+    location: Optional[str] = None
+    website_url: Optional[str] = None
+    date_of_birth: Optional[str] = None
+    preferred_language: Optional[str] = None
+    status: str
     created_at: str
     updated_at: str
 
