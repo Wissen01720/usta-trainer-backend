@@ -53,10 +53,10 @@ class UserService:
         existing = self.supabase.table("users").select("*").eq("email", user_data.email).execute()
         if existing.data:
             raise ValueError("El email ya está registrado")
-        # Hashea la contraseña si corresponde
+        # Hashea la contraseña y guárdala en password_hash
         data = user_data.model_dump() if hasattr(user_data, "model_dump") else user_data.dict()
         if "password" in data:
-            data["password"] = get_password_hash(data["password"])
+            data["password_hash"] = get_password_hash(data.pop("password"))
         response = self.supabase.table("users").insert(data).execute()
         if not response.data:
             raise ValueError("No se pudo crear el usuario")
