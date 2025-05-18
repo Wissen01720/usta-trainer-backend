@@ -37,3 +37,12 @@ class UserService:
         except ValidationError as e:
             print("Error de validación:", str(e))
             raise ValueError(f"Error de validación: {str(e)}")
+        
+    async def list_users(self) -> list[UserOut]:
+        response = self.supabase.table("users").select("*").execute()
+        return [UserOut(**user) for user in response.data or []]
+    
+    async def delete_user(self, user_id: str):
+        response = self.supabase.table("users").delete().eq("id", user_id).execute()
+        if not response.data:
+            raise NotFoundException("Usuario no encontrado")

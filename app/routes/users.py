@@ -54,3 +54,64 @@ async def get_user_profile(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Usuario no encontrado"
         )
+
+@router.get("/", response_model=list[UserOut])
+async def list_users(
+    service: UserService = Depends(UserService),
+    current_user: UserOut = Depends(get_current_user)
+):
+    """
+    Listar todos los usuarios.
+    Solo accesible para administradores.
+    """
+    if current_user.role != "admin":
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="No tienes permiso para acceder a este recurso"
+        )
+    return await service.list_users()
+
+@router.put("/{user_id}", response_model=UserOut)
+async def update_user_by_admin(
+    user_id: str,
+    user_data: UserUpdate,
+    service: UserService = Depends(UserService),
+    current_user: UserOut = Depends(get_current_user)
+):
+    """
+    Editar usuario por ID (solo admin).
+    """
+    if current_user.role != "admin":
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="No tienes permiso para acceder a este recurso"
+        )
+    try:
+        return await service.update_user(user_id, user_data)
+    except NotFoundException:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Usuario no encontrado"
+        )
+
+@router.delete("/{user_id}", status_code=204)
+async def delete_user_by_admin(
+    user_id: str,
+    service: UserService = Depends(UserService),
+    current_user: UserOut = Depends(get_current_user)
+):
+    """
+    Eliminar usuario por ID (solo admin).
+    """
+    if current_user.role != "admin":
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="No tienes permiso para acceder a este recurso"
+        )
+    try:
+        await service.delete_user(user_id)
+    except NotFoundException:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Usuario no encontrado"
+        )
