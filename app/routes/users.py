@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from app.services.user_service import UserService
 from app.utils.dependencies import get_current_user
 from app.utils.exceptions import NotFoundException
-from app.schemas.user import UserOut, UserUpdate
+from app.schemas.user import UserOut, UserUpdate, UserCreate
 
 router = APIRouter(prefix="/users", tags=["users"])
 
@@ -114,4 +114,26 @@ async def delete_user_by_admin(
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Usuario no encontrado"
+        )
+
+@router.post("/", response_model=UserOut, status_code=201)
+async def create_user_by_admin(
+    user_data: UserCreate,
+    service: UserService = Depends(UserService),
+    current_user: UserOut = Depends(get_current_user)
+):
+    """
+    Crear un nuevo usuario (solo admin).
+    """
+    if current_user.role != "admin":
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="No tienes permiso para acceder a este recurso"
+        )
+    try:
+        return await service.create_user(user_data)
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=str(e)
         )

@@ -1,7 +1,8 @@
 from typing import Optional
 from app.database import get_supabase
-from app.schemas.user import UserOut, UserUpdate
+from app.schemas.user import UserOut, UserUpdate, UserCreate
 from app.utils.exceptions import NotFoundException
+from app.utils.security import get_password_hash
 from pydantic import ValidationError
 
 class UserService:
@@ -46,3 +47,17 @@ class UserService:
         response = self.supabase.table("users").delete().eq("id", user_id).execute()
         if not response.data:
             raise NotFoundException("Usuario no encontrado")
+        
+    async def create_user(self, user_data: UserCreate) -> UserOut:
+        # Verifica si el email ya existe
+        existing = self.supabase.table("users").select("*").eq("email", user_data.email).execute()
+        if existing.data:
+            raise ValueError("El email ya está registrado")
+        # Hashea la contraseña si corresponde
+        data = user_data.model_dump() if hasattr(user_data, "model_dump") else user_data.dict()
+        if "password" in data:
+            data["password"] = get_password_hash(data["password"])
+        response = self.supabase.table("users").insert(data).execute()
+        if not response.data:
+            raise ValueError("No se pudo crear el usuario")
+        return UserOut(**response.data[0])    
