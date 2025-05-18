@@ -6,12 +6,20 @@ from app.schemas.exercise import ExerciseOut
 class LessonBase(BaseModel):
     title: str
     content: str
-    difficulty_level: Optional[str]
-    thumbnail_url: Optional[str]
+    difficulty_level: Optional[str] = None
+    thumbnail_url: Optional[str] = None
 
 class LessonCreate(LessonBase):
     is_published: bool = False
-    prerequisites: Optional[List[str]]
+    prerequisites: Optional[List[str]] = None
+
+class LessonUpdate(BaseModel):
+    title: Optional[str] = None
+    content: Optional[str] = None
+    difficulty_level: Optional[str] = None
+    thumbnail_url: Optional[str] = None
+    is_published: Optional[bool] = None
+    prerequisites: Optional[List[str]] = None
 
 class LessonOut(LessonBase):
     id: str
