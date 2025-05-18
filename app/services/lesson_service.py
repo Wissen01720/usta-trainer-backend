@@ -22,7 +22,7 @@ class LessonService:
         response = self.supabase.table("lessons")\
             .select("*")\
             .eq("is_published", True)\
-            .order("created_at", descending=True)\
+            .order("created_at", desc=True)\
             .execute()
             
         return response.data
@@ -38,20 +38,18 @@ class LessonService:
         if not lesson_response.data:
             raise NotFoundException("Lección no encontrada")
         
-        # Obtener ejercicios relacionados
         exercises_response = self.supabase.table("lesson_exercises")\
             .select("exercises(*)")\
             .eq("lesson_id", lesson_id)\
             .execute()
             
         return {
-            
             **lesson_response.data,
             "exercises": [e["exercises"] for e in exercises_response.data]
         }
     
     async def get_all_lessons(self) -> list[LessonOut]:
-        response = self.supabase.table("lessons").select("*").order("created_at", descending=True).execute()
+        response = self.supabase.table("lessons").select("*").order("created_at", desc=True).execute()  # <-- aquí
         return response.data
 
     async def update_lesson(self, lesson_id: str, lesson_data) -> LessonOut:
