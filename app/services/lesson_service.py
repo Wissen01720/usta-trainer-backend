@@ -49,3 +49,19 @@ class LessonService:
             **lesson_response.data,
             "exercises": [e["exercises"] for e in exercises_response.data]
         }
+    
+    async def get_all_lessons(self) -> list[LessonOut]:
+        response = self.supabase.table("lessons").select("*").order("created_at", descending=True).execute()
+        return response.data
+
+    async def update_lesson(self, lesson_id: str, lesson_data) -> LessonOut:
+        data = lesson_data.dict(exclude_unset=True)
+        response = self.supabase.table("lessons").update(data).eq("id", lesson_id).execute()
+        if not response.data:
+            raise NotFoundException("Lección no encontrada o sin cambios")
+        return response.data[0]
+
+    async def delete_lesson(self, lesson_id: str):
+        response = self.supabase.table("lessons").delete().eq("id", lesson_id).execute()
+        if not response.data:
+            raise NotFoundException("Lección no encontrada")
