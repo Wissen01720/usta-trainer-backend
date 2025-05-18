@@ -19,7 +19,8 @@ class UserService:
     
     async def update_user(self, user_id: str, user_data: UserUpdate) -> UserOut:
         update_data = user_data.model_dump(exclude_unset=True) if hasattr(user_data, "model_dump") else user_data.dict(exclude_unset=True)
-        print("Datos a actualizar:", update_data)  # <-- Depuración
+        print("Datos a actualizar:", update_data)
+        print("User ID:", user_id)
     
         response = self.supabase.table("users")\
             .update(update_data)\
@@ -27,11 +28,13 @@ class UserService:
             .select("*")\
             .single()\
             .execute()
-        print("Respuesta de supabase:", response.data)  # <-- Depuración
+        print("Respuesta de supabase:", response.data)
     
         if not response.data:
+            print("No se encontró el usuario o no hubo cambios.")
             raise NotFoundException("Usuario no encontrado o sin cambios")
         try:
             return UserOut(**response.data)
         except ValidationError as e:
+            print("Error de validación:", str(e))
             raise ValueError(f"Error de validación: {str(e)}")
