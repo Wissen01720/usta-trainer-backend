@@ -19,7 +19,7 @@ async def get_current_user_profile(
 async def update_current_user(
     user_data: UserUpdate,
     service: UserService = Depends(UserService),
-    current_user=Depends(get_current_user)
+    current_user: UserOut = Depends(get_current_user)
 ):
     """
     Actualizar el perfil del usuario autenticado.
@@ -36,13 +36,13 @@ async def update_current_user(
 async def get_user_profile(
     user_id: str,
     service: UserService = Depends(UserService),
-    current_user=Depends(get_current_user)
+    current_user: UserOut = Depends(get_current_user)
 ):
     """
     Obtener el perfil de un usuario por su ID.
-    Solo los administradores pueden acceder a esta información.
+    Los usuarios normales solo pueden acceder a su propio perfil.
     """
-    if current_user.role != "admin":
+    if current_user.role != "admin" and current_user.id != user_id:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="No tienes permiso para acceder a este recurso"
