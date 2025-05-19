@@ -21,6 +21,7 @@ class UserCreate(UserBase):
 class UserUpdate(BaseModel):
     first_name: Optional[str] = Field(None, min_length=2, max_length=50)
     last_name: Optional[str] = Field(None, min_length=2, max_length=50)
+    role: Optional[UserRole] = None
     avatar_url: Optional[str] = None
     bio: Optional[str] = Field(None, max_length=500)
     location: Optional[str] = None
