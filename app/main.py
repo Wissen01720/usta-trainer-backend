@@ -3,7 +3,6 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.routes import (
     auth, 
     users,
-    exercises,
     submissions,
     lessons,
     admin,
@@ -38,7 +37,6 @@ api_prefix = "/api/v1"
 # Incluir rutas con prefijo
 app.include_router(auth.router, prefix=api_prefix)
 app.include_router(users.router, prefix=api_prefix)
-app.include_router(exercises.router, prefix=api_prefix)
 app.include_router(submissions.router, prefix=api_prefix)
 app.include_router(lessons.router, prefix=api_prefix)
 app.include_router(admin.router, prefix=api_prefix)
