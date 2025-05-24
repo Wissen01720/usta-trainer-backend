@@ -1,7 +1,6 @@
 from pydantic import BaseModel
 from datetime import datetime
 from typing import List, Optional, Any
-from app.schemas.exercise import ExerciseOut
 
 class LessonBase(BaseModel):
     title: str
@@ -37,6 +36,3 @@ class LessonOut(LessonBase):
 
     class Config:
         orm_mode = True
-
-class LessonWithExercises(LessonOut):
-    exercises: List[ExerciseOut]
