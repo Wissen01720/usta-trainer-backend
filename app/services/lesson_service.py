@@ -1,6 +1,6 @@
 from typing import List
 from app.database import get_supabase
-from app.schemas.lessons import LessonOut, LessonWithExercises
+from app.schemas.lessons import LessonOut
 from app.utils.exceptions import NotFoundException
 
 class LessonService:
@@ -26,27 +26,6 @@ class LessonService:
             .execute()
             
         return response.data
-
-    async def get_lesson_with_exercises(self, lesson_id: str) -> LessonWithExercises:
-        # Obtener la lección
-        lesson_response = self.supabase.table("lessons")\
-            .select("*")\
-            .eq("id", lesson_id)\
-            .single()\
-            .execute()
-            
-        if not lesson_response.data:
-            raise NotFoundException("Lección no encontrada")
-        
-        exercises_response = self.supabase.table("lesson_exercises")\
-            .select("exercises(*)")\
-            .eq("lesson_id", lesson_id)\
-            .execute()
-            
-        return {
-            **lesson_response.data,
-            "exercises": [e["exercises"] for e in exercises_response.data]
-        }
     
     async def get_all_lessons(self) -> list[LessonOut]:
         response = self.supabase.table("lessons").select("*").order("created_at", desc=True).execute()  # <-- aquí
