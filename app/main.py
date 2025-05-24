@@ -20,6 +20,7 @@ app = FastAPI(
 origins = [
     "http://localhost:8080",
     "http://localhost:3000",
+    "https://virtualjudge.onrender.com",
     "https://tu-frontend-en-produccion.com"
 ]
 
