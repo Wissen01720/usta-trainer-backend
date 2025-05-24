@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from typing import List
-from app.schemas.lessons import LessonCreate, LessonUpdate, LessonOut, LessonWithExercises
+from app.schemas.lessons import LessonCreate, LessonOut, LessonWithExercises
 from app.services.lesson_service import LessonService
 from app.utils.dependencies import get_current_user, get_current_teacher
 

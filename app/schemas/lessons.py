@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 from datetime import datetime
-from typing import List, Optional, Any
+from typing import Optional, Any
 
 class LessonBase(BaseModel):
     title: str
