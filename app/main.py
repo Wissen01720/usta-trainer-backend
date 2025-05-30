@@ -6,7 +6,8 @@ from app.routes import (
     submissions,
     lessons,
     admin,
-    progress
+    progress,   # <--- agrega la coma aquí
+    teacher
 )
 from app.config import settings
 
@@ -42,6 +43,7 @@ app.include_router(submissions.router, prefix=api_prefix)
 app.include_router(lessons.router, prefix=api_prefix)
 app.include_router(admin.router, prefix=api_prefix)
 app.include_router(progress.router, prefix=api_prefix)
+app.include_router(teacher.router, prefix=api_prefix)
 
 @app.get("/")
 def root():

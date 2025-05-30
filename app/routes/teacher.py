@@ -46,7 +46,6 @@ async def update_lesson(
             detail="Solo los profesores pueden editar lecciones"
         )
     supabase = get_supabase()
-    # Solo puede editar sus propias lecciones
     response = supabase.table("lessons").update(lesson.model_dump(exclude_unset=True)).eq("id", lesson_id).eq("author_id", current_user.id).execute()
     if not response.data:
         raise HTTPException(status_code=404, detail="Lección no encontrada o no tienes permiso")
