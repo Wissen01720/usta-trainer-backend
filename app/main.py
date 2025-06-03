@@ -22,7 +22,8 @@ origins = [
     "http://localhost:8080",
     "http://localhost:3000",
     "https://virtualjudge.onrender.com",
-    "https://tu-frontend-en-produccion.com"
+    "https://tu-frontend-en-produccion.com",
+    "https://usta-trainer-77sm026fn-edgards-projects-2f318633.vercel.app"
 ]
 
 app.add_middleware(
